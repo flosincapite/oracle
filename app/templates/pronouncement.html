@@ -1,0 +1,20 @@
+<body>
+  <h1>THE ORACLE</h1>
+  {% if error_message %}
+  <div> ~~~ the oracle has stumbled ~~~ </div>
+  <div> {{ error_message }} </div>
+  {% else %}
+  <div> ~~~ the oracle has walked in words ~~~ </div>
+  <div>
+    {% for term in terms %}
+    {% if loop.index > 1 %}
+    <p>⬇</p>
+    {% endif %}
+    <p>{{ term }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div>
+    <a href="/oracle">Consult the Oracle Again</a>
+  </div>
+</body>
