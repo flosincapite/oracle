@@ -1,4 +1,25 @@
 <body>
   <h1>THE ORACLE</h1>
   <div> ~~~ still smelling the Delphic vapors ~~~ </div>
+  <div>
+    <form action="" method="post">
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.language.label }}
+        {{ form.language() }}
+      </p>
+      <p>
+        {{ form.origin_word.label }}
+        {{ form.origin_word(size=40, placeholder="Beginning") }}
+      </p>
+      <p>
+        {{ form.destiny_word.label }}
+        {{ form.destiny_word(size=40, placeholder="End") }}
+      </p>
+      <p>
+        {{ form.submit.label }}
+        {{ form.submit() }}
+      </p>
+    </form>
+  </div>
 </body>

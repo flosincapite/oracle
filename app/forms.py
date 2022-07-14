@@ -1,18 +1,11 @@
-import re
-
 import flask_wtf
-from wtforms import StringField, SubmitField
-from wtforms.validators import ValidationError
+from wtforms import SelectField, StringField, SubmitField
 
 
-class DateValidator(object):
-  def __call__(self, unused_form, field):
-    data = field.data
-    if not re.search(r'^\d{8}$', data):
-      raise ValidationError(f'Dates should look like YYYMMDD, not {data}.')
-
-
-class CsvForm(flask_wtf.FlaskForm):
-  firstdate = StringField('First Date', validators=[DateValidator()])
-  lastdate = StringField('Last Date', validators=[DateValidator()])
-  submit = SubmitField('Generate CSV')
+class DivinatoryForm(flask_wtf.FlaskForm):
+    language = SelectField(
+            'Language',
+            choices = ['ar', 'en', 'es', 'fa', 'fr', 'ku', 'tr', 'ur'])
+    origin_word = StringField('Origin Word')
+    destiny_word = StringField('Destiny Word')
+    submit = SubmitField('Oracular Pronouncement')
