@@ -27,20 +27,38 @@ def sexrobot():
 
 
 def _get_oracular_pronouncement():
-    language = flask.request.form['language']
+    language_eng = flask.request.form['language']
+    language = forms.language_code_for(language_eng)
     first = flask.request.form['origin_word']
     last = flask.request.form['destiny_word']
     model_file = os.path.join(
             the_app.static_folder, 'word2vec_models', f'{language}.bin')
-    the_oracle = Oracle.from_binary(model_file)
     try:
+        the_oracle = Oracle.from_binary(model_file)
         terms = the_oracle.traverse(first, last)
         error_message = None
     except OracularError as e:
         terms = []
         error_message = e.args[0]
     return flask.render_template(
-            'pronouncement.html', terms=terms, error_message=error_message)
+            'pronouncement.html', language=language, terms=terms,
+            error_message=error_message)
+
+
+@the_app.route('/oracle/synonyms/<language>/<term>', methods=['GET'])
+def synonyms(language, term):
+    model_file = os.path.join(
+            the_app.static_folder, 'word2vec_models', f'{language}.bin')
+    try:
+        the_oracle = Oracle.from_binary(model_file)
+        synonyms = the_oracle.synonyms_for(term)
+        error_message = None
+    except OracularError as e:
+        synonyms = []
+        error_message = e.args[0]
+    return flask.render_template(
+            'synonyms.html', language=language, term=term, synonyms=synonyms,
+            error_message=error_message)
 
 
 @the_app.route('/oracle', methods=['GET', 'POST'])

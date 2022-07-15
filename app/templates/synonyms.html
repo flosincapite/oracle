@@ -4,13 +4,10 @@
   <div> ~~~ the oracle has stumbled ~~~ </div>
   <div> {{ error_message }} </div>
   {% else %}
-  <div> ~~~ the oracle has walked in words ~~~ </div>
+  <div> ~~~ the oracle loiters on the word "{{ term }}" ~~~ </div>
   <div>
-    {% for term in terms %}
-    {% if loop.index > 1 %}
-    <p>⬇</p>
-    {% endif %}
-    <p><a href="/oracle/synonyms/{{ language }}/{{ term }}">{{ term }}</a></p>
+    {% for synonym in synonyms %}
+    <p><a href="/oracle/synonyms/{{ language }}/{{ synonym }}">{{ synonym }}</a></p>
     {% endfor %}
   </div>
   {% endif %}

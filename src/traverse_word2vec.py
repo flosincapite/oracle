@@ -21,12 +21,18 @@ class Oracle:
 
     @classmethod
     def from_binary(cls, binary_file):
-        word2vec_model = word2vec.load(binary_file)
+        try:
+            word2vec_model = word2vec.load(binary_file)
+        except:
+            raise OracularError('The oracle does not speak that language.')
         return Oracle(word2vec_model)
 
     def synonyms_for(self, phrase, n=10):
         term = _normalize_phrase(phrase)
-        indices, metrics = self._model.similar(term)
+        try:
+            indices, metrics = self._model.similar(term)
+        except KeyError:
+            raise OracularError(f'The oracle does not know the word "{phrase}."')
         return [self._model.word(index) for index in indices]
 
     def closest_terms(self, vector, n=10):
