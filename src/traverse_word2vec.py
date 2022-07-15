@@ -6,8 +6,8 @@ def _normalize_phrase(phrase):
 
 
 def _denormalize_term(term):
-    components = [s.strip() for s in term.split()]
-    return '_'.join(component for component in components if component)
+    components = [s.strip() for s in term.split('_')]
+    return ' '.join(component for component in components if component)
 
 
 class OracularError(Exception):
