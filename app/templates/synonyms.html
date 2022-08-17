@@ -1,17 +1,23 @@
-<body>
-  <h1>THE ORACLE</h1>
-  {% if error_message %}
-  <div> ~~~ the oracle has stumbled ~~~ </div>
-  <div> {{ error_message }} </div>
-  {% else %}
-  <div> ~~~ the oracle loiters on the word "{{ term }}" ~~~ </div>
-  <div>
-    {% for synonym in synonyms %}
-    <p><a href="/oracle/synonyms/{{ language }}/{{ synonym }}">{{ synonym }}</a></p>
-    {% endfor %}
-  </div>
-  {% endif %}
-  <div>
-    <a href="/oracle">Consult the Oracle Again</a>
-  </div>
-</body>
+<html>
+  <head>
+    <title>LANGUAGE GARBAGE ORACLE</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>THE ORACLE</h1>
+    {% if error_message %}
+    <div> ~~~ the oracle has stumbled ~~~ </div>
+    <div> {{ error_message }} </div>
+    {% else %}
+    <div> ~~~ the oracle loiters on the word "{{ term }}" ~~~ </div>
+    <div>
+      {% for synonym in synonyms %}
+      <p><a href="/oracle/synonyms/{{ language }}/{{ synonym }}">{{ synonym }}</a></p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div>
+      <a href="/oracle">Consult the Oracle Again</a>
+    </div>
+  </body>
+</html>

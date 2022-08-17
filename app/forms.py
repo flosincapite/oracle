@@ -9,7 +9,9 @@ from app import the_app
 
 _CODE_TO_ENGLISH_GLOTTONYM = {
     'ar': 'Arabic (Modern Standard)',
-    'en': 'English',
+    'en_combined': 'English (Combined)',
+    'en_reddit': 'English (Nasty Old Reddit)',
+    'en_wiki': 'English (Wikipedia)',
     'es': 'Spanish (Castellano)',
     'fr': 'French',
     'fa': 'Persian',
@@ -24,8 +26,9 @@ def _populate_languages():
     for fname in os.listdir(os.path.join(the_app.static_folder, 'word2vec_models')):
         if re.search(r'^\w+\.bin$', fname):
             language_code = fname.split('.')[0]
-            language_eng = _CODE_TO_ENGLISH_GLOTTONYM[language_code]
-            languages[language_eng] = language_code
+            if language_code in _CODE_TO_ENGLISH_GLOTTONYM:
+                language_eng = _CODE_TO_ENGLISH_GLOTTONYM[language_code]
+                languages[language_eng] = language_code
     return languages
 
 
