@@ -4,17 +4,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css' ) }}" />
   </head>
   <body style="text-align:center;">
-    <h1>SURREALIST BIBLIOMANCY</h1>
-    <div style="display:flex;flex-direction:column;align-items:center;" >
-      <div> ~~~ Ask your question to the wind, ~~~ </div>
-      <div> ~~~ then click the circle: ~~~ </div>
-      <div> ~~~ a relevant proverb will appear ... ~~~ </div>
-      <a href="/proverb/result">
-        <img
-          src="{{ button }}"
-          alt="image credits: Andrea Zambrano Rojas"
-          style="width:10%;height:auto;" />
-      </a>
+    <div class="centered-outer">
+      <div class="centered-inner">
+        <h1>SURREALIST BIBLIOMANCY</h1>
+        <div style="display:flex;flex-direction:column;align-items:center;" >
+          <div> ~~~ Ask your question to the wind, ~~~ </div>
+          <div> ~~~ then click the circle: ~~~ </div>
+          <div> ~~~ a relevant proverb will appear ... ~~~ </div>
+          <a href="/proverb/result">
+            <img
+              src="{{ button }}"
+              alt="image credits: Andrea Zambrano Rojas"
+              style="width:10%;height:auto;" />
+          </a>
+        </div>
+      </div>
     </div>
   </body>
 </html>
