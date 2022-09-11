@@ -1,3 +1,25 @@
 body {
   font-family: ocr-std-a,monospace;
 }
+
+.flex-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#proverb-line-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+
+.proverb-line {
+  color: white;
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
+}

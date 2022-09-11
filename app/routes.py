@@ -2,7 +2,9 @@ import csv
 import datetime
 import flask
 import io
+import json
 import os
+import random
 import tempfile
 
 from app import the_app
@@ -68,3 +70,40 @@ def oracle():
         return _get_oracular_pronouncement()
     else:
         return flask.render_template('oracle.html', form=form)
+
+
+def _ebru_file(color, shape):
+    return flask.url_for('static', filename=f'ebru_{color}_{shape}.png')
+
+
+_EBRU_COLORS = ['blue', 'pink']
+def _random_color():
+    return random.choice(_EBRU_COLORS)
+
+
+@the_app.route('/proverb', methods=['GET', 'POST'])
+def proverb():
+    button = _ebru_file(_random_color(), 'circle')
+    return flask.render_template('proverb.html', button=button)
+
+
+_PROVERBS = []
+with open(os.path.join(the_app.static_folder, 'proverbs.json'), 'r') as inp:
+    proverbs = json.load(inp)
+    for proverb in proverbs:
+        _PROVERBS.append(proverb.split('\n'))
+
+
+def _get_proverb_result():
+    # Populate list of proverbs, but only once.
+    proverb = random.choice(_PROVERBS)
+    background = _ebru_file(_random_color(), 'rectangle')
+    button = _ebru_file(_random_color(), 'circle')
+    return flask.render_template(
+            'one-proverb.html', lines=proverb, background=background,
+            button=button)
+
+
+@the_app.route('/proverb/result', methods=['GET', 'POST'])
+def proverb_result():
+    return _get_proverb_result()

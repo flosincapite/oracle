@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>GET YOUR PROVERBS HERE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css' ) }}" />
+  </head>
+  <body style="text-align:center;">
+    <div class="flex-box">
+      <div
+        id="proverb-line-container"
+        style="background-image: url({{ background }});">
+        {% for line in lines %}
+          <div class="proverb-line"> {{ line }} </div>
+        {% endfor %}
+      </div>
+      <a href="/proverb">
+        <img
+          src="{{ button }}"
+          alt="image credits: Andrea Zambrano Rojas"
+          style="width:10%;height:auto;" />
+      </a>
+    </div>
+    <script>
+    </script>
+  </body>
+</html>
