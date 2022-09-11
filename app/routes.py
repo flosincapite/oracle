@@ -28,6 +28,11 @@ def sexrobot():
     return flask.render_template('sexrobot.html')
 
 
+@the_app.route('/roemancer', methods=['GET', 'POST'])
+def roemancer():
+    return flask.render_template('roemancer.html')
+
+
 def _get_oracular_pronouncement():
     language_eng = flask.request.form['language']
     language = forms.language_code_for(language_eng)
