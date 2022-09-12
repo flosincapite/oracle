@@ -4,25 +4,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css' ) }}" />
   </head>
   <body style="text-align:center;">
-    <div class="centered-outer">
-      <div class="centered-inner">
-        <h1>SURREALIST BIBLIOMANCY</h1>
-        <div class="flex-box">
-          <div
-            id="proverb-line-container"
-            style="background-image: url({{ background }});">
-            {% for line in lines %}
-              <div class="proverb-line"> {{ line }} </div>
-            {% endfor %}
-          </div>
-          <a href="/proverb">
-            <img
-              src="{{ button }}"
-              alt="image credits: Andrea Zambrano Rojas"
-              style="width:10%;height:auto;" />
-          </a>
-        </div>
+    <h1>SURREALIST BIBLIOMANCY</h1>
+    <div class="flex-box">
+      <div
+        id="proverb-line-container"
+        style="background-image: url({{ background }});">
+        {% for line in lines %}
+          <div class="proverb-line"> {{ line }} </div>
+        {% endfor %}
       </div>
+      <a href="/proverb">
+        <img
+          src="{{ button }}"
+          style="width:10%;height:auto;" />
+      </a>
+    </div>
+    <div class="credits">
+      <div> ~~~ image credits: Andrea Zambrano Rojas ~~~ </div>
+      <div> ~~~ proverbial material generated communally at arthereistanbul ~~~ </div>
     </div>
     <script>
     </script>
