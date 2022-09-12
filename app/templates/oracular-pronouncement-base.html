@@ -1,0 +1,14 @@
+{% extends "oracle-base.html" %}
+
+{% block contents %}
+{% if error_message %}
+<div> ~~~ the oracle has stumbled ~~~ </div>
+<div> {{ error_message }} </div>
+{% else %}
+{% block pronouncement %}
+{% endblock pronouncement %}
+{% endif %}
+<div>
+  <a href="/oracle">Consult the Oracle Again</a>
+</div>
+{% endblock contents %}

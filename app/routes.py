@@ -89,7 +89,8 @@ def _random_color():
 @the_app.route('/proverb', methods=['GET', 'POST'])
 def proverb():
     button = _ebru_file(_random_color(), 'circle')
-    return flask.render_template('proverb.html', button=button)
+    return flask.render_template(
+            'proverb.html', button=button, endpoint='/proverb/result')
 
 
 _PROVERBS = []
@@ -106,7 +107,7 @@ def _get_proverb_result():
     button = _ebru_file(_random_color(), 'circle')
     return flask.render_template(
             'one-proverb.html', lines=proverb, background=background,
-            button=button)
+            button=button, endpoint='/proverb')
 
 
 @the_app.route('/proverb/result', methods=['GET', 'POST'])

@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>GET YOUR PROVERBS HERE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css' ) }}" />
+  </head>
+  <body style="text-align:center;">
+    <h1>SURREALIST BIBLIOMANCY</h1>
+    <div class="flex-box">
+      {% block contents %}
+      {% endblock contents %}
+      <a href="{{ endpoint }}">
+        <img
+          src="{{ button }}"
+          style="width:10%;height:auto;" />
+      </a>
+    </div>
+    <div class="credits">
+      <div> ~~~ image credits: Andrea Zambrano Rojas ~~~ </div>
+      <div> ~~~ proverbial material generated communally at arthereistanbul ~~~ </div>
+    </div>
+  </body>
+</html>
