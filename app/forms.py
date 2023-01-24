@@ -44,3 +44,9 @@ class DivinatoryForm(flask_wtf.FlaskForm):
 
 def language_code_for(language):
     return _LANGUAGES[language]
+
+
+class ConfusedPoetForm(flask_wtf.FlaskForm):
+    corpus = StringField('Enter Text')
+    synonyms = StringField('Enter Synonym Sets')
+    submit = SubmitField('Create a Confused Poetry Robot Friend')

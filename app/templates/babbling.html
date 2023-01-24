@@ -1,0 +1,10 @@
+{% extends "oracular-pronouncement-base.html" %}
+
+{% block pronouncement %}
+<div> ~~~ the oracle has walked in words ~~~ </div>
+<div>
+  {% for sentence in sentences %}
+    {{ sentence }}
+  {% endfor %}
+</div>
+{% endblock pronouncement %}

@@ -10,6 +10,8 @@ import tempfile
 from app import the_app
 from app import forms
 from src.traverse_word2vec import Oracle, OracularError
+from src.confused_predictive_model import model as confused_model
+from src.confused_predictive_model import textnorm
 
 
 @the_app.route('/', methods=['GET', 'POST'])
@@ -113,3 +115,34 @@ def _get_proverb_result():
 @the_app.route('/proverb/result', methods=['GET', 'POST'])
 def proverb_result():
     return _get_proverb_result()
+
+
+def _get_poetic_confusion():
+    the_text = flask.request.form['corpus']
+    synonyms = flask.request.form['synonyms']
+    synonym_sets = [
+            set([token.strip().lower() for token in synonym.split(',')])
+            for synonym in synonyms.split(';')
+            if synonym.strip()]
+    try:
+        sentences = textnorm.generate_normalized_sentences(the_text.strip())
+        model = confused_model.Model.from_sentence_generator(
+                sentences, synonym_sets)
+        generated_sentences = [' '.join(model.generate_sentence()[2:])]
+        error_message = None
+    except confused_model.VaticError as e:
+        terms = []
+        error_message = e.args[0]
+
+    return flask.render_template(
+            'babbling.html', sentences=generated_sentences,
+            error_message=error_message)
+
+
+@the_app.route('/confused-poet', methods=['GET', 'POST'])
+def confused_poet():
+    form = forms.ConfusedPoetForm()
+    if form.validate_on_submit():
+        return _get_poetic_confusion()
+    else:
+        return flask.render_template('confused-poet.html', form=form)
