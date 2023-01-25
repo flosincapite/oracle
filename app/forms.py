@@ -35,19 +35,48 @@ def _populate_languages():
 _LANGUAGES = _populate_languages()
 
 
-class DivinatoryForm(flask_wtf.FlaskForm):
+# TODO: Dynamically create Form classes using i18n module instead of doing this
+# nonsense.
+class DivinatoryFormEn(flask_wtf.FlaskForm):
     language = SelectField('Language', choices=sorted(_LANGUAGES.keys()))
     origin_word = StringField('Origin Word')
     destiny_word = StringField('Destiny Word')
     submit = SubmitField('Oracular Pronouncement')
 
 
+class DivinatoryFormEs(flask_wtf.FlaskForm):
+    origin_word = StringField('Palabra Origen')
+    destiny_word = StringField('Palabra Destino')
+    submit = SubmitField('Adivinación Fatídica')
+
+
+class ConfusedPoetFormEn(flask_wtf.FlaskForm):
+    corpus = StringField('Corpus')
+    synonyms = StringField('Synonyms')
+    number_sentences = StringField('Number of Sentences')
+    submit = SubmitField('Create an AI Poetry Friend')
+
+
+class ConfusedPoetFormEs(flask_wtf.FlaskForm):
+    corpus = StringField('Corpus')
+    synonyms = StringField('Sinónimos')
+    number_sentences = StringField('Número de Oraciones')
+    submit = SubmitField('Crear una IA amiga poeta')
+
+
 def language_code_for(language):
     return _LANGUAGES[language]
 
 
-class ConfusedPoetForm(flask_wtf.FlaskForm):
-    corpus = StringField('Enter Text')
-    synonyms = StringField('Enter Synonym Sets')
-    number_sentences = StringField('Enter Number of Sentences')
-    submit = SubmitField('Create a Confused Poetry Robot Friend')
+def get_divinatory_form(i18n_code):
+    if i18n_code == 'en':
+        return DivinatoryFormEn()
+    elif i18n_code == 'es':
+        return DivinatoryFormEs()
+
+
+def get_confused_poet_form(i18n_code):
+    if i18n_code == 'en':
+        return ConfusedPoetFormEn()
+    elif i18n_code == 'es':
+        return ConfusedPoetFormEs()

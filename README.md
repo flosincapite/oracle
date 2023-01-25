@@ -6,6 +6,10 @@ git clone <this repo>
 cd src
 git clone <confused-predictive-model>
 mv confused-predictive-model confused\_predictive\_model
+cd ..
+pip install -r requirements.txt
+pip install -r src/confused\_predictive\_model/requirements.txt
+<replace np.float with float in word2vec/wordvectors.py>
 
 ## TODO
 i18n
