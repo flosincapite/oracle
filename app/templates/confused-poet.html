@@ -14,6 +14,10 @@
       {{ form.synonyms(size=100, placeholder="ex. a,b;c,d") }}
     </p>
     <p>
+      {{ form.number_sentences.label }}
+      {{ form.number_sentences(size=5, value="5", placeholder="5") }}
+    </p>
+    <p>
       ~~ get an {{ form.submit() }} ~~~
     </p>
   </form>
