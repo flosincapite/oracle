@@ -1,24 +1,20 @@
 {% extends "oracle-base.html" %}
 
 {% block contents %}
-<div> ~~~ still smelling the Delphic vapors ~~~ </div>
+<div> ~~~ {{ oracle_smells }} ~~~ </div>
 <div>
   <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
-      {{ form.language.label }}
-      {{ form.language() }}
-    </p>
-    <p>
       {{ form.origin_word.label }}
-      {{ form.origin_word(size=40, placeholder="Beginning") }}
+      {{ form.origin_word(size=40, placeholder=origin_suggestion) }}
     </p>
     <p>
       {{ form.destiny_word.label }}
-      {{ form.destiny_word(size=40, placeholder="End") }}
+      {{ form.destiny_word(size=40, placeholder=destiny_suggestion) }}
     </p>
     <p>
-      ~~ get an {{ form.submit() }} ~~~
+      ~~ {{ get_it }} {{ form.submit() }} ~~~
     </p>
   </form>
 </div>

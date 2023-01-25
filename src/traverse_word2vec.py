@@ -22,8 +22,10 @@ class Oracle:
     @classmethod
     def from_binary(cls, binary_file):
         try:
+            print(binary_file)
             word2vec_model = word2vec.load(binary_file)
-        except:
+        except Exception as e:
+            print(e)
             raise OracularError('The oracle does not speak that language.')
         return Oracle(word2vec_model)
 

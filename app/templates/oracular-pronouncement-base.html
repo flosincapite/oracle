@@ -2,7 +2,7 @@
 
 {% block contents %}
 {% if error_message %}
-<div> ~~~ the oracle has stumbled ~~~ </div>
+<div> ~~~ {{ stumble_message }} ~~~ </div>
 <div> {{ error_message }} </div>
 {% else %}
 {% block pronouncement %}

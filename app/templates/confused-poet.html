@@ -1,24 +1,23 @@
 {% extends "oracle-base.html" %}
 
 {% block contents %}
-<div> ~~~ confused poet ~~~ </div>
 <div>
   <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
       {{ form.corpus.label }}
-      {{ form.corpus(rows="30", cols="100", placeholder="Text Corpus") }}
+      {{ form.corpus(size=100, rows="30", cols="100", placeholder=corpus_suggestion) }}
     </p>
     <p>
       {{ form.synonyms.label }}
-      {{ form.synonyms(size=100, placeholder="ex. a,b;c,d") }}
+      {{ form.synonyms(size=100, placeholder=synonym_suggestion) }}
     </p>
     <p>
       {{ form.number_sentences.label }}
       {{ form.number_sentences(size=5, value="5", placeholder="5") }}
     </p>
     <p>
-      ~~ get an {{ form.submit() }} ~~~
+      ~~~ {{ form.submit() }} ~~~
     </p>
   </form>
 </div>
