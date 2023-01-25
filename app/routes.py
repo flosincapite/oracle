@@ -10,6 +10,8 @@ import tempfile
 from app import the_app
 from app import forms
 from src.traverse_word2vec import Oracle, OracularError
+from src.confused_predictive_model import model as confused_model
+from src.confused_predictive_model import textnorm
 
 
 @the_app.route('/', methods=['GET', 'POST'])
@@ -49,7 +51,9 @@ def _get_oracular_pronouncement():
         error_message = e.args[0]
     return flask.render_template(
             'pronouncement.html', language=language, terms=terms,
-            error_message=error_message)
+            error_message=error_message,
+            back_link="/oracle",
+            back_link_message="Consult the Oracle Again")
 
 
 @the_app.route('/oracle/synonyms/<language>/<term>', methods=['GET'])
@@ -74,7 +78,9 @@ def oracle():
     if form.validate_on_submit():
         return _get_oracular_pronouncement()
     else:
-        return flask.render_template('oracle.html', form=form)
+        return flask.render_template(
+                'oracle.html', form=form, page_title="LANGUAGE GARBAGE ORACLE",
+                persona_name="THE ORACLE")
 
 
 def _ebru_file(color, shape):
@@ -113,3 +119,41 @@ def _get_proverb_result():
 @the_app.route('/proverb/result', methods=['GET', 'POST'])
 def proverb_result():
     return _get_proverb_result()
+
+
+def _get_poetic_confusion():
+    the_text = flask.request.form['corpus']
+    synonyms = flask.request.form['synonyms']
+    synonym_sets = [
+            set([token.strip().lower() for token in synonym.split(',')])
+            for synonym in synonyms.split(';')
+            if synonym.strip()]
+    sentences = []
+    number_sentences = int(flask.request.form.get('number_sentences', '5'))
+    number_sentences = max(number_sentences, 1)
+    try:
+        corpus = textnorm.generate_normalized_sentences(the_text.strip())
+        model = confused_model.Model.from_sentence_generator(
+                corpus, synonym_sets)
+        for _ in range(number_sentences):
+            sentences.append(' '.join(model.generate_sentence()[2:]))
+        error_message = None
+    except confused_model.VaticError as e:
+        terms = []
+        error_message = e.args[0]
+
+    return flask.render_template(
+            'babbling.html', sentences=sentences, error_message=error_message,
+            back_link="/confused-poet",
+            back_link_message="Consult the Confused Poet Again")
+
+
+@the_app.route('/confused-poet', methods=['GET', 'POST'])
+def confused_poet():
+    form = forms.ConfusedPoetForm()
+    if form.validate_on_submit():
+        return _get_poetic_confusion()
+    else:
+        return flask.render_template(
+                'confused-poet.html', form=form,
+                page_title="CONFUSED POET", persona_name="THE CONFUSED POET")

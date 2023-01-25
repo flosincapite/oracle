@@ -5,3 +5,8 @@ the oracle: a Flask backend for various writing toys that use computational ling
 git clone <this repo>
 cd src
 git clone <confused-predictive-model>
+mv confused-predictive-model confused\_predictive\_model
+
+## TODO
+i18n
+caching/saving models for reuse
