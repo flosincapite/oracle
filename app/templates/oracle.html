@@ -3,8 +3,12 @@
 {% block contents %}
 <div> ~~~ {{ oracle_smells }} ~~~ </div>
 <div>
-  <form action="" method="post">
+  <form action="{{ i18n_code }}/oracle" method="post">
     {{ form.hidden_tag() }}
+    <p>
+      {{ form.language.label }}
+      {{ form.language() }}
+    </p>
     <p>
       {{ form.origin_word.label }}
       {{ form.origin_word(size=40, placeholder=origin_suggestion) }}

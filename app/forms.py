@@ -9,7 +9,8 @@ from app import the_app
 
 _CODE_TO_ENGLISH_GLOTTONYM = {
     'ar': 'Arabic (Modern Standard)',
-    'en_combined': 'English (Combined)',
+    'en': 'English (Combined)',
+    # 'en_combined': 'English (Combined)',
     'en_reddit': 'English (Nasty Old Reddit)',
     'en_wiki': 'English (Wikipedia)',
     'es': 'Spanish (Castellano)',
@@ -21,6 +22,8 @@ _CODE_TO_ENGLISH_GLOTTONYM = {
 }
 
 
+# TODO: Parameterize this by language; add helper function to create language-
+# specific form classes.
 def _populate_languages():
     languages = {}
     for fname in os.listdir(os.path.join(the_app.static_folder, 'word2vec_models')):
@@ -45,6 +48,7 @@ class DivinatoryFormEn(flask_wtf.FlaskForm):
 
 
 class DivinatoryFormEs(flask_wtf.FlaskForm):
+    language = SelectField('Idioma', choices=sorted(_LANGUAGES.keys()))
     origin_word = StringField('Palabra Origen')
     destiny_word = StringField('Palabra Destino')
     submit = SubmitField('Adivinación Fatídica')

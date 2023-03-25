@@ -1,3 +1,6 @@
+from .confused_predictive_model import textnorm
+from nltk.corpus import stopwords
+import numpy as np
 import word2vec
 
 
@@ -41,7 +44,7 @@ class Oracle:
         indices, metrics = self._model.closest(vector)
         return [_denormalize_term(self._model.word(index)) for index in indices]
 
-    def traverse(self, origin, destiny, n=10):
+    def _get_terms_and_delta(self, origin, destiny, n):
         first_term = _normalize_phrase(origin)
         try:
             source_vector = self._model.get_vector(first_term)
@@ -53,6 +56,10 @@ class Oracle:
         except KeyError:
             raise OracularError(f'The oracle does not know the word "{destiny}."')
         # TODO: What if term isn't found?
+        return (first_term, last_term, source_vector, destiny_vector)
+
+    def traverse(self, origin, destiny, n=10):
+        first_term, last_term, source_vector, destiny_vector = self._get_terms_and_delta(origin, destiny, n)
         delta = (destiny_vector - source_vector) / n
 
         terms = []
@@ -72,3 +79,46 @@ class Oracle:
                 raise OracularError('how that happen?')
         terms.append(last_term)
         return [_denormalize_term(term) for term in terms]
+
+    def traverse_text(self, origin, destiny, text, n=10):
+        stop_words = set(stopwords.words('english') + ['from'])
+        _, _, source_vector, destiny_vector = self._get_terms_and_delta(origin, destiny, n)
+        delta = (destiny_vector - source_vector) / n
+        whole_text = []
+        for sentence in textnorm.generate_normalized_sentences(text):
+            whole_text.extend(sentence.split())
+        frozen_indices = set()
+        vectors = []
+        for i, word in enumerate(whole_text):
+            frozen = False
+            if word in stop_words:
+                frozen = True
+            else:
+                try:
+                    vector = self._model.get_vector(_normalize_phrase(word))
+                    print('vector for', word, 'is', vector)
+                except KeyError:
+                    frozen = True
+            if frozen:
+                frozen_indices.add(i)
+            else:
+                vectors.append(vector)
+
+        for _ in range(n):
+            new_vectors = []
+            for vector in vectors:
+                new_vectors.append(vector + delta)
+            vectors = new_vectors
+            def v():
+                for vector in vectors:
+                    yield vector
+            gen = v()
+            sentence = []
+            for i, word in enumerate(whole_text):
+                if i in frozen_indices:
+                    sentence.append(word)
+                else:
+                    vector = next(gen)
+                    next_term = self.closest_terms(vector)[0]
+                    sentence.append(next_term)
+            yield ' '.join(sentence)

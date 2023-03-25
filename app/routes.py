@@ -40,12 +40,12 @@ def roemancer():
 def _get_oracular_pronouncement(i18n_code):
     _i = lambda label: _i18n(i18n_code, label)
     # TODO: Add language selector back in (app/templates/oracle-en.html).
-    # language_eng = flask.request.form['language']
-    # language = forms.language_code_for(language_eng)
-    # model_file_name = f'{language}.bin'
+    language_eng = flask.request.form['language']
+    language = forms.language_code_for(language_eng)
+    model_file_name = f'{language}.bin'
     first = flask.request.form['origin_word']
     last = flask.request.form['destiny_word']
-    model_file_name = f'{i18n_code}.bin'
+    # model_file_name = f'{i18n_code}.bin'
     model_file = os.path.join(
             the_app.static_folder, 'word2vec_models', model_file_name)
     try:
