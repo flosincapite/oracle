@@ -10,6 +10,7 @@ cd ..
 pip install -r requirements.txt
 pip install -r src/confused\_predictive\_model/requirements.txt
 <replace np.float with float in word2vec/wordvectors.py>
+<python; import nltk; nltk.download('stopwords')>
 
 ## TODO
 i18n
