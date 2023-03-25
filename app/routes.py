@@ -118,6 +118,64 @@ def oracle_legacy():
     return oracle('en')
 
 
+def _get_text_traversal(i18n_code):
+    _i = lambda label: _i18n(i18n_code, label)
+    # TODO: Add language selector back in (app/templates/oracle-en.html).
+    language_eng = flask.request.form['language']
+    language = forms.language_code_for(language_eng)
+    model_file_name = f'{language}.bin'
+    first = flask.request.form['origin_word']
+    last = flask.request.form['destiny_word']
+    text = flask.request.form['text']
+
+    model_file = os.path.join(
+            the_app.static_folder, 'word2vec_models', model_file_name)
+    try:
+        the_oracle = Oracle.from_binary(model_file)
+        sentences = list(the_oracle.traverse_text(first, last, text))
+        error_message = None
+    except OracularError as e:
+        terms = []
+        error_message = e.args[0]
+    return flask.render_template(
+            'slipped-text.html',
+            # language=language,
+            i18n_code=i18n_code,
+            language=language,
+            sentences=sentences,
+            error_message=error_message,
+            oracle_walked_in_words=_i("ORACLE_WALKED_WORDS"),
+            back_link=f"/{i18n_code}/traverse-text",
+            back_link_message=_i("CONSULT_ORACLE_AGAIN"))
+
+
+@the_app.route('/<i18n_code>/traverse-text', methods=['GET', 'POST'])
+def traverse_text(i18n_code):
+    # TODO: Add language selector back in (app/templates/oracle-en.html).
+    _i = lambda label: _i18n(i18n_code, label)
+    form = forms.get_text_traversal_form(i18n_code)
+    if form.validate_on_submit():
+        return _get_text_traversal(i18n_code)
+    else:
+        return flask.render_template(
+                'traverse-text.html', form=form,
+                page_title=_i("LANGUAGE_GARBAGE_ORACLE_TITLE"),
+                persona_name=_i("ORACLE_PERSONA_NAME"),
+                oracle_smells=_i("ORACLE_SMELLS"),
+                # i18n_code=i18n_code,
+                origin_suggestion=_i("ORIGIN_WORD_SUGGESTION"),
+                destiny_suggestion=_i("DESTINY_WORD_SUGGESTION"),
+                get_it=_i("GET_AN"))
+
+
+# This is a legacy endpoint that defaults to i18n:en.
+# TODO: Figure out why en/en gets doubled when attempting to do this properly.
+# Currently, "legacy" endpoints are saving lives.
+@the_app.route('/traverse-text', methods=['GET', 'POST'])
+def traverse_text_legacy():
+    return traverse_text('en')
+
+
 def _ebru_file(color, shape):
     return flask.url_for('static', filename=f'ebru_{color}_{shape}.png')
 

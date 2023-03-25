@@ -1,0 +1,13 @@
+{% extends "oracular-pronouncement-base.html" %}
+
+{% block pronouncement %}
+<div> ~~~ {{ oracle_walked_in_words }} ~~~ </div>
+<div>
+  {% for sentence in sentences %}
+  {% if loop.index > 1 %}
+  <p>⬇</p>
+  {% endif %}
+  <p>{{ sentence }}</p>
+  {% endfor %}
+</div>
+{% endblock pronouncement %}

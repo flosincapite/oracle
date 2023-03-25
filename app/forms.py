@@ -2,7 +2,7 @@ import os
 import re
 
 import flask_wtf
-from wtforms import SelectField, StringField, SubmitField
+from wtforms import SelectField, StringField, SubmitField, TextAreaField
 
 from app import the_app
 
@@ -54,6 +54,22 @@ class DivinatoryFormEs(flask_wtf.FlaskForm):
     submit = SubmitField('Adivinación Fatídica')
 
 
+class TextualFormEn(flask_wtf.FlaskForm):
+    language = SelectField('Language', choices=sorted(_LANGUAGES.keys()))
+    origin_word = StringField('Origin Word')
+    destiny_word = StringField('Destiny Word')
+    text = TextAreaField('Full Text')
+    submit = SubmitField('Versions of the Text')
+
+
+class TextualFormEs(flask_wtf.FlaskForm):
+    language = SelectField('Idioma', choices=sorted(_LANGUAGES.keys()))
+    origin_word = StringField('Palabra Origen')
+    destiny_word = StringField('Palabra Destino')
+    text = TextAreaField('Texto Completo')
+    submit = SubmitField('Versiones del Texto')
+
+
 class ConfusedPoetFormEn(flask_wtf.FlaskForm):
     corpus = StringField('Corpus')
     synonyms = StringField('Synonyms')
@@ -77,6 +93,13 @@ def get_divinatory_form(i18n_code):
         return DivinatoryFormEn()
     elif i18n_code == 'es':
         return DivinatoryFormEs()
+
+
+def get_text_traversal_form(i18n_code):
+    if i18n_code == 'en':
+        return TextualFormEn()
+    elif i18n_code == 'es':
+        return TextualFormEs()
 
 
 def get_confused_poet_form(i18n_code):

@@ -1,3 +1,4 @@
+import logging
 from .confused_predictive_model import textnorm
 from nltk.corpus import stopwords
 import numpy as np
@@ -25,10 +26,9 @@ class Oracle:
     @classmethod
     def from_binary(cls, binary_file):
         try:
-            print(binary_file)
             word2vec_model = word2vec.load(binary_file)
         except Exception as e:
-            print(e)
+            logging.error(e)
             raise OracularError('The oracle does not speak that language.')
         return Oracle(word2vec_model)
 
@@ -96,7 +96,6 @@ class Oracle:
             else:
                 try:
                     vector = self._model.get_vector(_normalize_phrase(word))
-                    print('vector for', word, 'is', vector)
                 except KeyError:
                     frozen = True
             if frozen:

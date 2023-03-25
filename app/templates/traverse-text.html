@@ -1,0 +1,30 @@
+{% extends "oracle-base.html" %}
+
+{% block contents %}
+<div> ~~~ {{ oracle_smells }} ~~~ </div>
+<div>
+  <form action="{{ i18n_code }}/traverse-text" method="post">
+    <p>i18n_code is {{ i18n_code }}</p>
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.language.label }}
+      {{ form.language() }}
+    </p>
+    <p>
+      {{ form.origin_word.label }}
+      {{ form.origin_word(size=40, placeholder=origin_suggestion) }}
+    </p>
+    <p>
+      {{ form.destiny_word.label }}
+      {{ form.destiny_word(size=40, placeholder=destiny_suggestion) }}
+    </p>
+    <p>
+      {{ form.text.label }}
+      {{ form.text(size=40, placeholder=text_suggestion) }}
+    </p>
+    <p>
+      ~~ {{ get_it }} {{ form.submit() }} ~~~
+    </p>
+  </form>
+</div>
+{% endblock contents %}
