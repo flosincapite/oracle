@@ -15,3 +15,6 @@ pip install -r src/confused\_predictive\_model/requirements.txt
 ## TODO
 i18n
 caching/saving models for reuse
+
+## HELP
+https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-20-04
