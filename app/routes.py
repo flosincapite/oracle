@@ -37,34 +37,13 @@ def roemancer():
     return flask.render_template('roemancer.html')
 
 
-def _get_oracular_pronouncement(i18n_code):
-    _i = lambda label: _i18n(i18n_code, label)
-    # TODO: Add language selector back in (app/templates/oracle-en.html).
-    language_eng = flask.request.form['language']
-    language = forms.language_code_for(language_eng)
-    model_file_name = f'{language}.bin'
-    first = flask.request.form['origin_word']
-    last = flask.request.form['destiny_word']
-    # model_file_name = f'{i18n_code}.bin'
-    model_file = os.path.join(
-            the_app.static_folder, 'word2vec_models', model_file_name)
+def _get_synonyms():
     try:
         the_oracle = Oracle.from_binary(model_file)
         terms = the_oracle.traverse(first, last)
         error_message = None
-    except OracularError as e:
-        terms = []
-        error_message = e.args[0]
-    return flask.render_template(
-            'pronouncement.html',
-            # language=language,
-            i18n_code=i18n_code,
-            language=i18n_code,
-            terms=terms,
-            error_message=error_message,
-            oracle_walked_in_words=_i("ORACLE_WALKED_WORDS"),
-            back_link=f"/{i18n_code}/oracle",
-            back_link_message=_i("CONSULT_ORACLE_AGAIN"))
+    except:
+        pass
 
 
 @the_app.route(
@@ -94,13 +73,50 @@ def synonyms(i18n_code, language, term):
             error_message=error_message)
 
 
+def _get_oracular_pronouncement(language, origin_word, destiny_word):
+    language_code = forms.language_code_for(language)
+    model_file_name = f'{language_code}.bin'
+    model_file = os.path.join(
+            the_app.static_folder, 'word2vec_models', model_file_name)
+    try:
+        the_oracle = Oracle.from_binary(model_file)
+        terms = the_oracle.traverse(origin_word, destiny_word)
+        error_message = None
+    except OracularError as e:
+        terms = []
+        error_message = e.args[0]
+    return {
+        "terms": terms,
+        "error_message": error_message
+    }
+
+
+@the_app.route('/api/oracle', methods=['POST'])
+def oracle_api():
+    parameters = flask.request.json
+    return flask.jsonify(_get_oracular_pronouncement(**parameters))
+
+
 @the_app.route('/<i18n_code>/oracle', methods=['GET', 'POST'])
 def oracle(i18n_code):
     # TODO: Add language selector back in (app/templates/oracle-en.html).
     _i = lambda label: _i18n(i18n_code, label)
     form = forms.get_divinatory_form(i18n_code)
     if form.validate_on_submit():
-        return _get_oracular_pronouncement(i18n_code)
+        language_eng = flask.request.form['language']
+        first = flask.request.form['origin_word']
+        last = flask.request.form['destiny_word']
+        pronouncement = _get_oracular_pronouncement(language_eng, first, last)
+        return flask.render_template(
+                'pronouncement.html',
+                # language=language,
+                i18n_code=i18n_code,
+                language=i18n_code,
+                terms=pronouncement["terms"],
+                error_message=pronouncement["error_message"],
+                oracle_walked_in_words=_i("ORACLE_WALKED_WORDS"),
+                back_link=f"/{i18n_code}/oracle",
+                back_link_message=_i("CONSULT_ORACLE_AGAIN"))
     else:
         return flask.render_template(
                 'oracle.html', form=form,
