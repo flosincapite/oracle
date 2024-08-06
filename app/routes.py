@@ -37,13 +37,28 @@ def roemancer():
     return flask.render_template('roemancer.html')
 
 
-def _get_synonyms():
+def _get_synonyms(language, term):
+    language_code = forms.language_code_for(language)
+    model_file_name = f'{language_code}.bin'
+    model_file = os.path.join(
+            the_app.static_folder, 'word2vec_models', model_file_name)
     try:
         the_oracle = Oracle.from_binary(model_file)
-        terms = the_oracle.traverse(first, last)
+        terms = the_oracle.synonyms_for(term)
         error_message = None
-    except:
-        pass
+    except OracularError as e:
+        terms = []
+        error_message = e.args[0]
+    return {
+        "terms": terms,
+        "error_message": error_message
+    }
+
+
+@the_app.route('/api/synonyms', methods=['POST'])
+def synonyms_api():
+    parameters = flask.request.json
+    return flask.jsonify(_get_synonyms(**parameters))
 
 
 @the_app.route(
@@ -54,23 +69,15 @@ def synonyms(i18n_code, language, term):
     # TODO: Consult app/templates/synonyms-en.html.
     if re.search(r'oracle', term):
         term = term.split('/')[-1]
-    model_file = os.path.join(
-            the_app.static_folder, 'word2vec_models', f'{language}.bin')
-    try:
-        the_oracle = Oracle.from_binary(model_file)
-        the_synonyms = the_oracle.synonyms_for(term)
-        error_message = None
-    except OracularError as e:
-        the_synonyms = []
-        error_message = e.args[0]
+    synonyms_result = _get_synonyms(language, term)
     return flask.render_template(
             'synonyms.html',
             i18n_code=i18n_code,
             language=language,
             term=term,
             oracle_loiters=_i("ORACLE_LOITERS"),
-            the_synonyms=the_synonyms,
-            error_message=error_message)
+            the_synonyms=synonyms_result["terms"],
+            error_message=synonyms_result["error_message"])
 
 
 def _get_oracular_pronouncement(language, origin_word, destiny_word):
