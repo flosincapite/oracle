@@ -118,35 +118,32 @@ def oracle_legacy():
     return oracle('en')
 
 
-def _get_text_traversal(i18n_code):
-    _i = lambda label: _i18n(i18n_code, label)
+def _get_text_traversal(language, origin_word, destiny_word, text):
     # TODO: Add language selector back in (app/templates/oracle-en.html).
-    language_eng = flask.request.form['language']
-    language = forms.language_code_for(language_eng)
-    model_file_name = f'{language}.bin'
-    first = flask.request.form['origin_word']
-    last = flask.request.form['destiny_word']
-    text = flask.request.form['text']
+    language_code = forms.language_code_for(language)
+    model_file_name = f'{language_code}.bin'
 
     model_file = os.path.join(
             the_app.static_folder, 'word2vec_models', model_file_name)
     try:
         the_oracle = Oracle.from_binary(model_file)
-        sentences = list(the_oracle.traverse_text(first, last, text))
+        sentences = list(the_oracle.traverse_text(origin_word, destiny_word, text))
         error_message = None
     except OracularError as e:
-        terms = []
+        sentences = []
         error_message = e.args[0]
-    return flask.render_template(
-            'slipped-text.html',
-            # language=language,
-            i18n_code=i18n_code,
-            language=language,
-            sentences=sentences,
-            error_message=error_message,
-            oracle_walked_in_words=_i("ORACLE_WALKED_WORDS"),
-            back_link=f"/{i18n_code}/traverse-text",
-            back_link_message=_i("CONSULT_ORACLE_AGAIN"))
+
+    return {
+        'sentences': sentences,
+        'error_message': error_message,
+        'language': language_code
+    }
+
+
+@the_app.route('/api/traverse-text', methods=['POST'])
+def traverse_text_api():
+    parameters = flask.request.json
+    return flask.jsonify(_get_text_traversal(**parameters))
 
 
 @the_app.route('/<i18n_code>/traverse-text', methods=['GET', 'POST'])
@@ -155,8 +152,24 @@ def traverse_text(i18n_code):
     _i = lambda label: _i18n(i18n_code, label)
     form = forms.get_text_traversal_form(i18n_code)
     if form.validate_on_submit():
-        return _get_text_traversal(i18n_code)
+        language = flask.request.form['language']
+        origin_word = flask.request.form['origin_word']
+        destiny_word = flask.request.form['destiny_word']
+        text = flask.request.form['text']
+        text_traversal = _get_text_traversal(
+                language, origin_word, destiny_word, text)
+        return flask.render_template(
+                'slipped-text.html',
+                # language=language,
+                i18n_code=i18n_code,
+                language=text_traversal['language'],
+                sentences=text_traversal['sentences'],
+                error_message=text_traversal['error_message'],
+                oracle_walked_in_words=_i("ORACLE_WALKED_WORDS"),
+                back_link=f"/{i18n_code}/traverse-text",
+                back_link_message=_i("CONSULT_ORACLE_AGAIN"))
     else:
+        print(form)
         return flask.render_template(
                 'traverse-text.html', form=form,
                 page_title=_i("LANGUAGE_GARBAGE_ORACLE_TITLE"),
@@ -214,35 +227,36 @@ def proverb_result():
     return _get_proverb_result()
 
 
-def _get_poetic_confusion(i18n_code):
-    _i = lambda label: _i18n(i18n_code, label)
-    the_text = flask.request.form['corpus']
-    synonyms = flask.request.form['synonyms']
+def _get_poetic_confusion(corpus, synonyms, number_sentences=None):
     synonym_sets = [
             set([token.strip().lower() for token in synonym.split(',')])
             for synonym in synonyms.split(';')
             if synonym.strip()]
     sentences = []
-    try:
-        number_sentences = int(flask.request.form.get('number_sentences', '5'))
-    except:
+    if number_sentences is None:
         number_sentences = 5
+    number_sentences = int(number_sentences)
     number_sentences = max(number_sentences, 1)
     try:
-        corpus = textnorm.generate_normalized_sentences(the_text.strip())
+        corpus = textnorm.generate_normalized_sentences(corpus.strip())
         model = confused_model.Model.from_sentence_generator(
                 corpus, synonym_sets)
         for _ in range(number_sentences):
             sentences.append(' '.join(model.generate_sentence()[2:]))
         error_message = None
     except confused_model.VaticError as e:
-        terms = []
         error_message = e.args[0]
 
-    return flask.render_template(
-            'babbling.html', sentences=sentences, error_message=error_message,
-            back_link=f"/{i18n_code}/confused-poet",
-            back_link_message=_i("CONSULT_POET_AGAIN"))
+    return {
+        'sentences': sentences,
+        'error_message': error_message
+    }
+
+
+@the_app.route('/api/confused-poet', methods=['POST'])
+def confused_poet_api():
+    parameters = flask.request.json
+    return flask.jsonify(_get_poetic_confusion(**parameters))
 
 
 @the_app.route('/<i18n_code>/confused-poet', methods=['GET', 'POST'])
@@ -250,7 +264,19 @@ def confused_poet(i18n_code):
     _i = lambda label: _i18n(i18n_code, label)
     form = forms.get_confused_poet_form(i18n_code)
     if form.validate_on_submit():
-        return _get_poetic_confusion(i18n_code)
+        corpus = flask.request.form['corpus']
+        synonyms = flask.request.form['synonyms']
+        try:
+            number_sentences = flask.request.form.get('number_sentences', 5)
+        except:
+            number_sentences = None
+        poetic_confusion = _get_poetic_confusion(corpus, synonyms, number_sentences)
+        return flask.render_template(
+                'babbling.html',
+                sentences=poetic_confusion['sentences'],
+                error_message=poetic_confusion['error_message'],
+                back_link=f"/{i18n_code}/confused-poet",
+                back_link_message=_i("CONSULT_POET_AGAIN"))
     else:
         return flask.render_template(
                 'confused-poet.html', form=form,
