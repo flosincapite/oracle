@@ -1,0 +1,3 @@
+[submodule "src/confused-predictive-model"]
+	path = src/confused-predictive-model
+	url = git@gitlab.com:flosincapite/confused-predictive-model.git
