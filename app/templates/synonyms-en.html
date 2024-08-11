@@ -1,0 +1,10 @@
+{% extends "oracular-pronouncement-base.html" %}
+
+{% block pronouncement %}
+<div> ~~~ {{ oracle_loiters }} "{{ term }}" ~~~ </div>
+<div>
+  {% for synonym in the_synonyms %}
+  <p><a href="{{ i18n_code }}/oracle/synonyms/{{ language }}/{{ synonym }}">{{ synonym }}</a></p>
+  {% endfor %}
+</div>
+{% endblock pronouncement %}
