@@ -1,0 +1,67 @@
+---
+eleventyComputed:
+  backgroundImage: "/images/snail_shimmer_crown.gif"
+  borderColor: rgba(255, 100, 255, 1)
+  backgroundColor: rgb(100, 80, 93)
+  shoulderBackground: rgba(255, 255, 255, 0.8)
+---
+
+<html>
+  <head>
+    <style>{% include "./_src/css/base.css" | url %}</style>
+    <title>
+      {{ site.name }}{% if title %} - {{ title }}{% endif %}
+    </title>
+    <link
+        rel="icon"
+        type="image/gif"
+        href="/images/alien_gills.gif" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Sono&family=Spectral:wght@600&family=Tinos:wght@700&family=Alegreya+Sans&family=Laila&family=Philosopher&display=swap" rel="stylesheet">
+    <meta
+        name="description" 
+        content="
+          {% if description %}
+            {{ description }}
+          {% else %}
+            {{ site.description }}
+          {% endif %}" >
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <header>
+			<div class="title">
+			<h1>{{ title }}</h1>
+			</div>
+			<div class="snail">
+			<img src="{{ backgroundImage }}"/>
+			</div>
+		</header>
+		<div class="nav-container">
+      <div class="nav-inner">
+        <ul class="justified-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/publications/">Publications</a></li>
+          <li><a href="/workshops/">Workshops</a></li>
+          <li><a href="/experimental-art/">Toys</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </div>
+      <div class="nav-border"><div class="inner">
+			</div>
+			</div>
+    </div>
+    <div class="shoulders">
+      <main>
+        {{ content | safe }}
+      </main>
+    </div>
+		<footer>
+			made by Cory Massaro | snailed by Cory Massaro<br>
+			built with <a href="https://www.11ty.dev">Eleventy</a> | <a href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a> | <a href="https://tina.io">Tina CMS</a><br>
+			favicon evolved with <a href="https://direct.mit.edu/evco/article-abstract/19/3/373/1371/Picbreeder-A-Case-Study-in-Collaborative?redirectedFrom=fulltext">Pic</a><a href="https://nbenko1.github.io/#/">breeder</a>
+		</footer>
+  </body>
+<html>

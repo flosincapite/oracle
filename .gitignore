@@ -1,4 +1,3 @@
 **/__pycache__/**
 venv/**
-src/confused_predictive_model/**
 app/static/word2vec_models/**
