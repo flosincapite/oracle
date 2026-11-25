@@ -1,0 +1,16 @@
+{% extends "oracle-base.html" %}
+
+{% block contents %}
+<div>
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.query.label }}
+      {{ form.query(size=100, rows="30", cols="100", placeholder="Place query here") }}
+    </p>
+    <p>
+      ~~~ {{ form.submit() }} ~~~
+    </p>
+  </form>
+</div>
+{% endblock contents %}

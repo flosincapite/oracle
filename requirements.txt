@@ -1,6 +1,7 @@
 Flask
 Flask-WTF
 nltk
+requests
 uwsgi
 wheel
 word2vec

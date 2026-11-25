@@ -6,12 +6,12 @@ import word2vec
 
 
 def _normalize_phrase(phrase):
-    return '_'.join(phrase.lower().strip().split())
+    return "_".join(phrase.lower().strip().split())
 
 
 def _denormalize_term(term):
-    components = [s.strip() for s in term.split('_')]
-    return ' '.join(component for component in components if component)
+    components = [s.strip() for s in term.split("_")]
+    return " ".join(component for component in components if component)
 
 
 class OracularError(Exception):
@@ -29,7 +29,7 @@ class Oracle:
             word2vec_model = word2vec.load(binary_file)
         except Exception as e:
             logging.error(e)
-            raise OracularError('The oracle does not speak that language.')
+            raise OracularError("The oracle does not speak that language.")
         return Oracle(word2vec_model)
 
     def synonyms_for(self, phrase, n=10):
@@ -59,7 +59,9 @@ class Oracle:
         return (first_term, last_term, source_vector, destiny_vector)
 
     def traverse(self, origin, destiny, n=10):
-        first_term, last_term, source_vector, destiny_vector = self._get_terms_and_delta(origin, destiny, n)
+        first_term, last_term, source_vector, destiny_vector = (
+            self._get_terms_and_delta(origin, destiny, n)
+        )
         delta = (destiny_vector - source_vector) / n
 
         terms = []
@@ -68,6 +70,7 @@ class Oracle:
         def _add_term(term):
             term_set.add(term)
             terms.append(term)
+
         terms.append(first_term)
         for _ in range(n):
             source_vector += delta
@@ -76,13 +79,15 @@ class Oracle:
                     _add_term(term)
                     break
             else:
-                raise OracularError('how that happen?')
+                raise OracularError("how that happen?")
         terms.append(last_term)
         return [_denormalize_term(term) for term in terms]
 
     def traverse_text(self, origin, destiny, text, n=10):
-        stop_words = set(stopwords.words('english') + ['from'])
-        _, _, source_vector, destiny_vector = self._get_terms_and_delta(origin, destiny, n)
+        stop_words = set(stopwords.words("english") + ["from"])
+        _, _, source_vector, destiny_vector = self._get_terms_and_delta(
+            origin, destiny, n
+        )
         delta = (destiny_vector - source_vector) / n
         whole_text = []
         for sentence in textnorm.generate_normalized_sentences(text):
@@ -108,9 +113,11 @@ class Oracle:
             for vector in vectors:
                 new_vectors.append(vector + delta)
             vectors = new_vectors
+
             def v():
                 for vector in vectors:
                     yield vector
+
             gen = v()
             sentence = []
             for i, word in enumerate(whole_text):
@@ -120,4 +127,4 @@ class Oracle:
                     vector = next(gen)
                     next_term = self.closest_terms(vector)[0]
                     sentence.append(next_term)
-            yield ' '.join(sentence)
+            yield " ".join(sentence)
